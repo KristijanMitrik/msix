@@ -49,8 +49,7 @@ void main() {
 
   test('manifest created', () async {
     await AppxManifest().generateAppxManifest();
-    expect(
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).exists(), true);
+    expect(await File(p.join(tempFolderPath, 'AppxManifest.xml')).exists(), true);
   });
 
   test('identityName is valid', () async {
@@ -79,8 +78,7 @@ void main() {
     await AppxManifest().generateAppxManifest();
     expect(
         (await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString())
-            .contains(
-                '<PublisherDisplayName>$testValue</PublisherDisplayName>'),
+            .contains('<PublisherDisplayName>$testValue</PublisherDisplayName>'),
         true);
   });
 
@@ -108,10 +106,8 @@ void main() {
     var testValue = 'appDescription_test123';
     config.appDescription = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
-    expect(manifestContent.contains('<Description>$testValue</Description>'),
-        true);
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    expect(manifestContent.contains('<Description>$testValue</Description>'), true);
     expect(manifestContent.contains('Description="$testValue"'), true);
   });
 
@@ -119,13 +115,10 @@ void main() {
     var testValue = 'displayName_test123';
     config.displayName = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
-    expect(manifestContent.contains('<DisplayName>$testValue</DisplayName>'),
-        true);
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    expect(manifestContent.contains('<DisplayName>$testValue</DisplayName>'), true);
     expect(manifestContent.contains('DisplayName="$testValue"'), true);
-    expect(manifestContent.contains('<uap:DefaultTile ShortName="$testValue"'),
-        true);
+    expect(manifestContent.contains('<uap:DefaultTile ShortName="$testValue"'), true);
   });
 
   test('architecture is valid', () async {
@@ -142,8 +135,7 @@ void main() {
     var testValue = 'executableFileName_test123';
     config.executableFileName = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(manifestContent.contains('Executable="$testValue'), true);
   });
 
@@ -152,11 +144,10 @@ void main() {
     config.executionAlias = testValue;
     await AppxManifest().generateAppxManifest();
 
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(
-        manifestContent.contains(
-            '<desktop:ExecutionAlias Alias="${testValue.toLowerCase()}.exe" />'),
+        manifestContent
+            .contains('<desktop:ExecutionAlias Alias="${testValue.toLowerCase()}.exe" />'),
         true);
   });
 
@@ -164,34 +155,20 @@ void main() {
     var testValue = 'http';
     config.protocolActivation = [testValue];
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(manifestContent.contains('<uap:Protocol Name="$testValue">'), true);
     expect(
-        manifestContent.contains(
-            '<uap:DisplayName>$testValue URI Scheme</uap:DisplayName>'),
-        true);
+        manifestContent.contains('<uap:DisplayName>$testValue URI Scheme</uap:DisplayName>'), true);
   });
 
   test('fileExtension is valid', () async {
-    var testValue =
-        'fileExtension_test1,.fileExtension_test2,  fileExtension_test3';
+    var testValue = 'fileExtension_test1,.fileExtension_test2,  fileExtension_test3';
     config.fileExtension = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
-    expect(
-        manifestContent
-            .contains('<uap:FileType>.fileExtension_test1</uap:FileType>'),
-        true);
-    expect(
-        manifestContent
-            .contains('<uap:FileType>.fileExtension_test2</uap:FileType>'),
-        true);
-    expect(
-        manifestContent
-            .contains('<uap:FileType>.fileExtension_test3</uap:FileType>'),
-        true);
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    expect(manifestContent.contains('<uap:FileType>.fileExtension_test1</uap:FileType>'), true);
+    expect(manifestContent.contains('<uap:FileType>.fileExtension_test2</uap:FileType>'), true);
+    expect(manifestContent.contains('<uap:FileType>.fileExtension_test3</uap:FileType>'), true);
   });
 
   test('executableFileName with enableAtStartup is valid', () async {
@@ -201,34 +178,27 @@ void main() {
       ..enableAtStartup = true;
     await AppxManifest().generateAppxManifest();
 
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(manifestContent.contains('Executable="$testValue'), true);
     expect(
-        manifestContent.contains(
-            '<desktop:Extension Category="windows.startupTask" Executable="$testValue'),
+        manifestContent
+            .contains('<desktop:Extension Category="windows.startupTask" Executable="$testValue'),
         true);
   });
   test('capabilities is valid', () async {
     var testValue = 'videosLibrary,microphone,  documentsLibrary';
     config.capabilities = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
-    expect(manifestContent.contains('<uap:Capability Name="videosLibrary" />'),
-        true);
-    expect(manifestContent.contains('<DeviceCapability Name="microphone" />'),
-        true);
-    expect(
-        manifestContent.contains('<uap:Capability Name="documentsLibrary" />'),
-        true);
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    expect(manifestContent.contains('<uap:Capability Name="videosLibrary" />'), true);
+    expect(manifestContent.contains('<DeviceCapability Name="microphone" />'), true);
+    expect(manifestContent.contains('<uap:Capability Name="documentsLibrary" />'), true);
   });
 
   test('languages is valid', () async {
     config.languages = ['en-us', 'he-il'];
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(manifestContent.contains('<Resource Language="en-us" />'), true);
     expect(manifestContent.contains('<Resource Language="he-il" />'), true);
   });
@@ -237,15 +207,14 @@ void main() {
     var testValue = 'c569ad1a-8a98-4512-a92c-e46fb56cf3e3';
     config.toastActivatorCLSID = testValue;
     await AppxManifest().generateAppxManifest();
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
     expect(
         manifestContent.contains(
             '<com:ExeServer Executable="executableFileName_test" Arguments="----AppNotificationActivationServer" DisplayName="Toast activator">'),
         true);
     expect(
-        manifestContent.contains(
-            '<desktop:ToastNotificationActivation ToastActivatorCLSID="$testValue"/>'),
+        manifestContent
+            .contains('<desktop:ToastNotificationActivation ToastActivatorCLSID="$testValue"/>'),
         true);
     expect(manifestContent.contains('<com:Class Id="$testValue"/>'), true);
   });
@@ -254,8 +223,7 @@ void main() {
     var testGuid = 'ba40803c-736a-41f0-ba7c-cdb3eaed7496';
     var testGuid2 = 'ba40803c-736a-41f0-ba7c-cdb3eaed7497';
 
-    config.contextMenuConfiguration =
-        ContextMenuConfiguration(dllPath: 'test_dll.dll', items: [
+    config.contextMenuConfiguration = ContextMenuConfiguration(dllPath: 'test_dll.dll', items: [
       ContextMenuItem(
         type: '*',
         commands: [
@@ -271,16 +239,14 @@ void main() {
       ContextMenuItem(
         type: 'Directory\\Background',
         commands: [
-          ContextMenuItemCommand(
-              id: 'test2', clsid: testGuid2, customDllPath: 'test_dll2.dll'),
+          ContextMenuItemCommand(id: 'test2', clsid: testGuid2, customDllPath: 'test_dll2.dll'),
         ],
       ),
     ]);
 
     await AppxManifest().generateAppxManifest();
 
-    var manifestContent =
-        await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
+    var manifestContent = await File(p.join(tempFolderPath, 'AppxManifest.xml')).readAsString();
 
     expect(
       manifestContent,

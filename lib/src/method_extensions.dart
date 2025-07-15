@@ -21,15 +21,13 @@ extension StringExtensions on String {
 }
 
 extension StringListExtensions on List<String> {
-  bool containsArgument(String arg) =>
-      any((item) => item.toLowerCase().trim() == arg);
+  bool containsArgument(String arg) => any((item) => item.toLowerCase().trim() == arg);
   bool containsArguments(List<String> args) =>
       any((item) => args.contains(item.toLowerCase().trim()));
 }
 
 extension StringConversions on String? {
-  String? toHtmlEscape() =>
-      this != null ? const HtmlEscape().convert(this!) : null;
+  String? toHtmlEscape() => this != null ? const HtmlEscape().convert(this!) : null;
 }
 
 extension FileSystemEntityExtensions on FileSystemEntity {
@@ -42,13 +40,12 @@ extension DirectoryExtensions on Directory {
   Future<void> copyDirectory(Directory destination) async {
     await for (FileSystemEntity entity in list(recursive: false)) {
       if (entity is Directory) {
-        Directory newDirectory = Directory(
-            path.join(destination.absolute.path, path.basename(entity.path)));
+        Directory newDirectory =
+            Directory(path.join(destination.absolute.path, path.basename(entity.path)));
         await newDirectory.create();
         await entity.absolute.copyDirectory(newDirectory);
       } else if (entity is File) {
-        await entity
-            .copy(path.join(destination.path, path.basename(entity.path)));
+        await entity.copy(path.join(destination.path, path.basename(entity.path)));
       }
     }
   }

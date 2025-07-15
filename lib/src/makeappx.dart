@@ -16,15 +16,8 @@ class MakeAppx {
     String makeAppxPath = p.join(_config.msixToolkitPath, 'makeappx.exe');
 
     // ignore: avoid_single_cascade_in_expression_statements
-    await Process.run(makeAppxPath, [
-      'pack',
-      '/v',
-      '/o',
-      '/d',
-      _config.buildFilesFolder,
-      '/p',
-      _config.msixPath
-    ])
+    await Process.run(
+        makeAppxPath, ['pack', '/v', '/o', '/d', _config.buildFilesFolder, '/p', _config.msixPath])
       ..exitOnError();
   }
 }

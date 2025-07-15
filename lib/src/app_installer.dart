@@ -15,10 +15,9 @@ class AppInstaller {
   final Logger _logger = GetIt.I<Logger>();
   final Configuration _config = GetIt.I<Configuration>();
 
-  String get _versionsFolderPath =>
-      p.join(_config.publishFolderPath!, 'versions');
-  String get _msixVersionPath => p.join(
-      _versionsFolderPath, '${_config.appName}_${_config.msixVersion}.msix');
+  String get _versionsFolderPath => p.join(_config.publishFolderPath!, 'versions');
+  String get _msixVersionPath =>
+      p.join(_versionsFolderPath, '${_config.appName}_${_config.msixVersion}.msix');
 
   /// Ask the user if he want to increment the version
   /// if the current publish version is the same or lower than the last published version.
@@ -27,37 +26,31 @@ class AppInstaller {
 
     if (!await File(_config.appInstallerPath).exists()) return;
 
-    String appInstallerContent =
-        await File(_config.appInstallerPath).readAsString();
+    String appInstallerContent = await File(_config.appInstallerPath).readAsString();
     String appInstallerVersion = appInstallerContent.substring(
         appInstallerContent.indexOf('Version="') + 9,
-        appInstallerContent.indexOf(
-            '"', appInstallerContent.indexOf('Version="') + 9));
-    appInstallerVersion =
-        appInstallerVersion.substring(0, appInstallerVersion.lastIndexOf('.'));
+        appInstallerContent.indexOf('"', appInstallerContent.indexOf('Version="') + 9));
+    appInstallerVersion = appInstallerVersion.substring(0, appInstallerVersion.lastIndexOf('.'));
     Version lastPublishVersion = Version.parse(appInstallerVersion);
-    Version msixVersion = Version.parse(_config.msixVersion!
-        .substring(0, _config.msixVersion!.lastIndexOf('.')));
+    Version msixVersion =
+        Version.parse(_config.msixVersion!.substring(0, _config.msixVersion!.lastIndexOf('.')));
     String msixVersionRevision =
         _config.msixVersion!.substring(_config.msixVersion!.lastIndexOf('.'));
 
     if (lastPublishVersion == msixVersion || lastPublishVersion > msixVersion) {
       if (lastPublishVersion == msixVersion) {
-        _logger.stdout(
-            'You publishing the same version ($lastPublishVersion) as last publish');
+        _logger.stdout('You publishing the same version ($lastPublishVersion) as last publish');
       } else {
         _logger.stdout(
             'You publishing older version ($msixVersion) then last publish version ($lastPublishVersion)');
       }
 
       String incrementVersion = await readInput(
-          'Do you want to increment it to version ${lastPublishVersion.nextPatch} ?'
-                  .emphasized +
+          'Do you want to increment it to version ${lastPublishVersion.nextPatch} ?'.emphasized +
               ' (y/N) '.gray);
 
       if (incrementVersion.toLowerCase().trim() == 'y') {
-        _config.msixVersion =
-            '${lastPublishVersion.nextPatch}$msixVersionRevision';
+        _config.msixVersion = '${lastPublishVersion.nextPatch}$msixVersionRevision';
       }
     }
   }
@@ -102,10 +95,8 @@ class AppInstaller {
 
     webInstallerSite = webInstallerSite
         .replaceAll('PAGE_TITLE', _config.displayName ?? _config.appName!)
-        .replaceAll(
-            'PAGE_DESCRIPTION',
-            _config.appDescription ??
-                '${_config.displayName ?? _config.appName!} installer')
+        .replaceAll('PAGE_DESCRIPTION',
+            _config.appDescription ?? '${_config.displayName ?? _config.appName!} installer')
         .replaceAll('PAGE_TITLE', _config.displayName ?? _config.appName!)
         .replaceAll('APP_NAME', _config.displayName ?? _config.appName!)
         .replaceAll('APP_VERSION', _config.msixVersion!)
@@ -133,8 +124,7 @@ class AppInstaller {
         .replaceAll('IMAGE_BASE64', base64Logo)
         .replaceAll('FAVICON_BASE64', base64favicon);
 
-    await File(p.join(_config.publishFolderPath!, 'index.html'))
-        .writeAsString(webInstallerSite);
+    await File(p.join(_config.publishFolderPath!, 'index.html')).writeAsString(webInstallerSite);
   }
 }
 

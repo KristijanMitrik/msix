@@ -17,14 +17,8 @@ class MakePri {
     String makePriPath = p.join(_config.msixToolkitPath, 'makepri.exe');
 
     // ignore: avoid_single_cascade_in_expression_statements
-    await Process.run(makePriPath, [
-      'createconfig',
-      '/cf',
-      '$buildPath\\priconfig.xml',
-      '/dq',
-      'en-US',
-      '/o'
-    ])
+    await Process.run(
+        makePriPath, ['createconfig', '/cf', '$buildPath\\priconfig.xml', '/dq', 'en-US', '/o'])
       ..exitOnError();
 
     ProcessResult makePriProcess = await Process.run(makePriPath, [

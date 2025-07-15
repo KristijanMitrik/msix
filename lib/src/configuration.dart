@@ -358,6 +358,7 @@ class Configuration {
       ..addOption('version')
       ..addOption('display-name', abbr: 'd')
       ..addOption('publisher-display-name', abbr: 'u')
+      ..addOption('override-executable')
       ..addOption('identity-name', abbr: 'i')
       ..addOption('publisher', abbr: 'b')
       ..addOption('logo-path', abbr: 'l')
