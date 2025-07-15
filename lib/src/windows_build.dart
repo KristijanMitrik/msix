@@ -27,8 +27,7 @@ class WindowsBuild {
     _logger.trace('build windows files with the command: '
         '"$flutterPath ${flutterBuildArgs.join(' ')}"');
 
-    ProcessResult buildProcess =
-        await Process.run(flutterPath, flutterBuildArgs, runInShell: true);
+    ProcessResult buildProcess = await Process.run(flutterPath, flutterBuildArgs, runInShell: true);
 
     buildProcess.exitOnError();
 

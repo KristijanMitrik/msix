@@ -48,55 +48,47 @@ msix_config:
     test('with out app name', () async {
       await File(yamlTestPath).writeAsString('name:');
       await config.getConfigValues();
-      await expectLater(
-          config.validateConfigValues,
-          throwsA(predicate(
-              (String error) => error.contains('App name is empty'))));
+      await expectLater(config.validateConfigValues,
+          throwsA(predicate((String error) => error.contains('App name is empty'))));
     });
 
     test('with out app name property', () async {
       await File(yamlTestPath).writeAsString('description:');
       await config.getConfigValues();
-      await expectLater(
-          config.validateConfigValues,
-          throwsA(predicate(
-              (String error) => error.contains('App name is empty'))));
+      await expectLater(config.validateConfigValues,
+          throwsA(predicate((String error) => error.contains('App name is empty'))));
     });
   });
 
   test('valid description', () async {
-    await File(yamlTestPath)
-        .writeAsString('description: description123$yamlContent');
+    await File(yamlTestPath).writeAsString('description: description123$yamlContent');
     await config.getConfigValues();
     expect(config.appDescription, 'description123');
   });
 
   group('msix version:', () {
     test('valid version in yaml', () async {
-      await File(yamlTestPath)
-          .writeAsString('${yamlContent}msix_version: 1.2.3.4');
+      await File(yamlTestPath).writeAsString('${yamlContent}msix_version: 1.2.3.4');
       await config.getConfigValues();
       expect(config.msixVersion, '1.2.3.4');
     });
 
     test('invalid version letter in yaml', () async {
-      await File(yamlTestPath)
-          .writeAsString('${yamlContent}msix_version: 1.s.3.4');
+      await File(yamlTestPath).writeAsString('${yamlContent}msix_version: 1.s.3.4');
       await config.getConfigValues();
       await expectLater(
           config.validateConfigValues,
-          throwsA(predicate((String error) =>
-              error.contains('msix version can be only in this format'))));
+          throwsA(predicate(
+              (String error) => error.contains('msix version can be only in this format'))));
     });
 
     test('invalid version space in yaml', () async {
-      await File(yamlTestPath)
-          .writeAsString('${yamlContent}msix_version: 1.s. 3.4');
+      await File(yamlTestPath).writeAsString('${yamlContent}msix_version: 1.s. 3.4');
       await config.getConfigValues();
       await expectLater(
           config.validateConfigValues,
-          throwsA(predicate((String error) =>
-              error.contains('msix version can be only in this format'))));
+          throwsA(predicate(
+              (String error) => error.contains('msix version can be only in this format'))));
     });
 
     test('valid version in long argument', () async {
@@ -116,8 +108,8 @@ msix_config:
       await customConfig.getConfigValues();
       await expectLater(
           customConfig.validateConfigValues,
-          throwsA(predicate((String error) =>
-              error.contains('msix version can be only in this format'))));
+          throwsA(predicate(
+              (String error) => error.contains('msix version can be only in this format'))));
     });
 
     test('setting version with old -v options', () async {
@@ -169,33 +161,29 @@ msix_config:
     test('exited certificate path with password', () async {
       var pfxTestPath = p.join(tempFolderPath, 'test.pfx');
       await File(pfxTestPath).create();
-      await File(yamlTestPath)
-          .writeAsString('''${yamlContent}certificate_path: $pfxTestPath  
+      await File(yamlTestPath).writeAsString('''${yamlContent}certificate_path: $pfxTestPath  
   certificate_password: 1234''');
       await config.getConfigValues();
       expect(config.certificatePath, pfxTestPath);
     });
 
     test('invalid certificate path', () async {
-      await File(yamlTestPath).writeAsString(
-          '${yamlContent}certificate_path: $tempFolderPath/test123.pfx');
+      await File(yamlTestPath)
+          .writeAsString('${yamlContent}certificate_path: $tempFolderPath/test123.pfx');
       await config.getConfigValues();
       await expectLater(
           config.validateConfigValues,
-          throwsA(predicate((String error) =>
-              error.contains('The file certificate not found in'))));
+          throwsA(
+              predicate((String error) => error.contains('The file certificate not found in'))));
     });
 
     test('certificate without password', () async {
       var pfxTestPath = p.join(tempFolderPath, 'test.pfx');
       await File(pfxTestPath).create();
-      await File(yamlTestPath)
-          .writeAsString('${yamlContent}certificate_path: $pfxTestPath');
+      await File(yamlTestPath).writeAsString('${yamlContent}certificate_path: $pfxTestPath');
       await config.getConfigValues();
-      await expectLater(
-          config.validateConfigValues,
-          throwsA(predicate((String error) =>
-              error.contains('Certificate password is empty'))));
+      await expectLater(config.validateConfigValues,
+          throwsA(predicate((String error) => error.contains('Certificate password is empty'))));
     });
   });
 
@@ -206,11 +194,9 @@ msix_config:
     const String testGuid2 = 'ba40803c-736a-41f0-ba7c-cdb3eaed7497';
 
     setUp(() async {
-      fakeContextMenuDll = await File(p.join(tempFolderPath, 'test.dll'))
-          .create(recursive: true);
+      fakeContextMenuDll = await File(p.join(tempFolderPath, 'test.dll')).create(recursive: true);
 
-      fakeContextMenuDll2 = await File(p.join(tempFolderPath, 'test2.dll'))
-          .create(recursive: true);
+      fakeContextMenuDll2 = await File(p.join(tempFolderPath, 'test2.dll')).create(recursive: true);
     });
 
     tearDown(() async {
@@ -242,20 +228,17 @@ msix_config:
       expect(
           config.contextMenuConfiguration?.items.map((e) => e.toString()),
           containsAll([
-            ContextMenuItem(type: '*', commands: [
-              ContextMenuItemCommand(id: 'command1', clsid: testGuid)
-            ]).toString(),
+            ContextMenuItem(
+                type: '*',
+                commands: [ContextMenuItemCommand(id: 'command1', clsid: testGuid)]).toString(),
             ContextMenuItem(type: '.png', commands: [
               ContextMenuItemCommand(
-                  id: 'command1',
-                  clsid: testGuid2,
-                  customDllPath: fakeContextMenuDll2.path),
+                  id: 'command1', clsid: testGuid2, customDllPath: fakeContextMenuDll2.path),
             ]).toString()
           ]));
 
       expect(
-          config.contextMenuConfiguration?.comSurrogateServers
-              .map((e) => e.toString()),
+          config.contextMenuConfiguration?.comSurrogateServers.map((e) => e.toString()),
           containsAll([
             ContextMenuComSurrogateServer(
               clsid: testGuid,

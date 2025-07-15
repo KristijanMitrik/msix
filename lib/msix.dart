@@ -28,8 +28,7 @@ class Msix {
     await _initConfig();
     await _buildMsixFiles();
     String msixStyledPath = File(_msixOutputPath).parent.path.blue.emphasized;
-    _logger
-        .write('${'unpackaged msix files created in: '.green}$msixStyledPath');
+    _logger.write('${'unpackaged msix files created in: '.green}$msixStyledPath');
   }
 
   /// Execute with the `msix:pack` command
@@ -37,8 +36,7 @@ class Msix {
     await _initConfig();
 
     /// check if the appx manifest is exist
-    String appxManifestPath =
-        p.join(_config.buildFilesFolder, 'AppxManifest.xml');
+    String appxManifestPath = p.join(_config.buildFilesFolder, 'AppxManifest.xml');
     if (!(await File(appxManifestPath).exists())) {
       String error = 'run "msix:build" first';
       _logger.stderr(error.red);
@@ -74,24 +72,20 @@ class Msix {
     await appInstaller.generateAppInstaller();
     await appInstaller.generateAppInstallerWebSite();
     loggerProgress.finish(showTiming: true);
-    _logger.write(
-        '${'appinstaller created: '.green}${_config.appInstallerPath.blue.emphasized}');
+    _logger.write('${'appinstaller created: '.green}${_config.appInstallerPath.blue.emphasized}');
   }
 
   /// Register [Logger] and [Configuration] as singleton services
   _setupSingletonServices(List<String> args) {
-    GetIt.I.registerSingleton<Logger>(args.contains('-v')
-        ? Logger.verbose()
-        : Logger.standard(ansi: Ansi(true)));
+    GetIt.I.registerSingleton<Logger>(
+        args.contains('-v') ? Logger.verbose() : Logger.standard(ansi: Ansi(true)));
 
     GetIt.I.registerSingleton<Configuration>(Configuration(args));
   }
 
-  String get _msixOutputPath =>
-      _config.msixPath.contains(p.join('build', 'windows'))
-          ? _config.msixPath
-              .substring(_config.msixPath.indexOf(p.join('build', 'windows')))
-          : _config.msixPath;
+  String get _msixOutputPath => _config.msixPath.contains(p.join('build', 'windows'))
+      ? _config.msixPath.substring(_config.msixPath.indexOf(p.join('build', 'windows')))
+      : _config.msixPath;
 
   Future<void> _initConfig() async {
     await _config.getConfigValues();
@@ -114,10 +108,8 @@ class Msix {
     await assets.createIcons();
     await assets.copyVCLibsFiles();
 
-    if (_config.contextMenuConfiguration?.comSurrogateServers.isNotEmpty ==
-        true) {
-      for (var element
-          in _config.contextMenuConfiguration!.comSurrogateServers) {
+    if (_config.contextMenuConfiguration?.comSurrogateServers.isNotEmpty == true) {
+      for (var element in _config.contextMenuConfiguration!.comSurrogateServers) {
         await assets.copyContextMenuDll(element.dllPath);
       }
     }
@@ -141,8 +133,7 @@ class Msix {
       SignTool signTool = SignTool();
 
       if (_config.installCert &&
-          (_config.signToolOptions == null ||
-              _config.signToolOptions!.isEmpty)) {
+          (_config.signToolOptions == null || _config.signToolOptions!.isEmpty)) {
         await signTool.installCertificate();
       }
 
@@ -153,8 +144,8 @@ class Msix {
   }
 
   /// print the location of the created msix file
-  void _printMsixOutputLocation() => _logger
-      .write('${'msix created: '.green}${_msixOutputPath.blue.emphasized}');
+  void _printMsixOutputLocation() =>
+      _logger.write('${'msix created: '.green}${_msixOutputPath.blue.emphasized}');
 
   static void registerWith() {}
 }

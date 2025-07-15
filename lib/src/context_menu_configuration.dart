@@ -12,8 +12,7 @@ class ContextMenuConfiguration {
         .map((e) => e.commands)
         .expand((e) => e)
         .map((e) {
-          return ContextMenuComSurrogateServer(
-              clsid: e.clsid, dllPath: e.customDllPath ?? dllPath);
+          return ContextMenuComSurrogateServer(clsid: e.clsid, dllPath: e.customDllPath ?? dllPath);
         })
         .toList()
         .unique((element) => element.clsid);
@@ -22,9 +21,7 @@ class ContextMenuConfiguration {
   factory ContextMenuConfiguration.fromYaml(YamlMap json) {
     return ContextMenuConfiguration(
         dllPath: json['dll_path'],
-        items: (json['items'] as YamlList)
-            .map((e) => ContextMenuItem.fromYaml(e))
-            .toList());
+        items: (json['items'] as YamlList).map((e) => ContextMenuItem.fromYaml(e)).toList());
   }
 
   @override
@@ -42,9 +39,8 @@ class ContextMenuItem {
   factory ContextMenuItem.fromYaml(YamlMap json) {
     return ContextMenuItem(
         type: json['type'],
-        commands: (json['commands'] as YamlList)
-            .map((e) => ContextMenuItemCommand.fromYaml(e))
-            .toList());
+        commands:
+            (json['commands'] as YamlList).map((e) => ContextMenuItemCommand.fromYaml(e)).toList());
   }
 
   @override
@@ -58,14 +54,11 @@ class ContextMenuItemCommand {
   final String clsid;
   final String? customDllPath;
 
-  ContextMenuItemCommand(
-      {required this.id, required this.clsid, this.customDllPath});
+  ContextMenuItemCommand({required this.id, required this.clsid, this.customDllPath});
 
   factory ContextMenuItemCommand.fromYaml(YamlMap json) {
     return ContextMenuItemCommand(
-        id: json['id'],
-        clsid: json['clsid'],
-        customDllPath: json['custom_dll']);
+        id: json['id'], clsid: json['clsid'], customDllPath: json['custom_dll']);
   }
 
   @override

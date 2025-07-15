@@ -33,8 +33,7 @@ class SignTool {
         } else if (_config.signToolOptions!.containsArgument('/f')) {
           subject = await _getCertificateSubjectByFile(true);
         }
-      } else if (_config.certificatePath != null &&
-          _config.certificatePath!.isNotEmpty) {
+      } else if (_config.certificatePath != null && _config.certificatePath!.isNotEmpty) {
         subject = await _getCertificateSubjectByFile(false);
       }
 
@@ -67,8 +66,8 @@ class SignTool {
   }
 
   String _getSignToolOptionsArgumentValue(String searchArgName) {
-    int argumentIndex = _config.signToolOptions!.indexWhere(
-        (argument) => argument.toLowerCase().trim() == searchArgName);
+    int argumentIndex = _config.signToolOptions!
+        .indexWhere((argument) => argument.toLowerCase().trim() == searchArgName);
 
     /// return argument value
     return _config.signToolOptions![argumentIndex + 1];
@@ -81,8 +80,7 @@ class SignTool {
   }
 
   Future<ProcessResult> _executePowershellCommand(String command) async =>
-      await Process.run(
-          'powershell.exe', ['-NoProfile', '-NonInteractive', command],
+      await Process.run('powershell.exe', ['-NoProfile', '-NonInteractive', command],
           stdoutEncoding: utf8, stderrEncoding: utf8)
         ..exitOnError();
 
@@ -99,8 +97,8 @@ class SignTool {
     _logger.trace('getting certificate "Subject" by certificate thumbprint');
 
     String thumbprintValue = _getSignToolOptionsArgumentValue('/sha1');
-    String subject = await _getInstalledCertificateSubject(
-        "\$_.Thumbprint -eq \"$thumbprintValue\"");
+    String subject =
+        await _getInstalledCertificateSubject("\$_.Thumbprint -eq \"$thumbprintValue\"");
 
     return subject;
   }
@@ -109,8 +107,7 @@ class SignTool {
     _logger.trace('getting certificate "Subject" by certificate Subject');
 
     String subjectValue = _getSignToolOptionsArgumentValue('/n');
-    String subject = await _getInstalledCertificateSubject(
-        "\$_.Subject -like \"*$subjectValue*\"");
+    String subject = await _getInstalledCertificateSubject("\$_.Subject -like \"*$subjectValue*\"");
 
     return subject;
   }
@@ -119,8 +116,7 @@ class SignTool {
     _logger.trace('getting certificate "Subject" by certificate Issuer');
 
     String issuerValue = _getSignToolOptionsArgumentValue('/i');
-    String subject = await _getInstalledCertificateSubject(
-        "\$_.Issuer -like \"*$issuerValue*\"");
+    String subject = await _getInstalledCertificateSubject("\$_.Issuer -like \"*$issuerValue*\"");
 
     return subject;
   }
@@ -128,12 +124,10 @@ class SignTool {
   Future<String> _getCertificateSubjectByFile(bool fromSignToolOptions) async {
     _logger.trace('getting certificate "Subject" by file certificate');
 
-    String filePathValue = fromSignToolOptions
-        ? _getSignToolOptionsArgumentValue('/f')
-        : _config.certificatePath!;
+    String filePathValue =
+        fromSignToolOptions ? _getSignToolOptionsArgumentValue('/f') : _config.certificatePath!;
     String passwordValue = _config.certificatePassword ?? '';
-    if (fromSignToolOptions &&
-        _config.signToolOptions!.containsArgument('/p')) {
+    if (fromSignToolOptions && _config.signToolOptions!.containsArgument('/p')) {
       passwordValue = _getSignToolOptionsArgumentValue('/p');
     }
     ProcessResult certificateDetailsProcess = await _executePowershellCommand(
@@ -148,16 +142,14 @@ class SignTool {
   /// Use Powershell to install the test certificate
   /// if needed and if the user want to.
   Future<void> installCertificate() async {
-    ProcessResult getInstalledCertificate =
-        await Process.run('powershell.exe', [
+    ProcessResult getInstalledCertificate = await Process.run('powershell.exe', [
       '-NoProfile',
       '-NonInteractive',
       "\$env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine');dir Cert:\\CurrentUser\\Root | Where-Object { \$_.Subject -eq  '${_config.publisher}'}"
     ])
-          ..exitOnError();
+      ..exitOnError();
 
-    bool isCertificateNotInstalled =
-        getInstalledCertificate.stdout.toString().isNullOrEmpty;
+    bool isCertificateNotInstalled = getInstalledCertificate.stdout.toString().isNullOrEmpty;
 
     if (isCertificateNotInstalled) {
       _logger.trace('installing certificate');
@@ -174,8 +166,7 @@ class SignTool {
             'Import-PfxCertificate -FilePath "${_config.certificatePath}" -Password (ConvertTo-SecureString -String "${_config.certificatePassword}" -AsPlainText -Force) -CertStoreLocation Cert:\\LocalMachine\\Root';
         String installCertificateScriptPath =
             p.join(_config.msixAssetsPath, 'installCertificate.ps1');
-        await File(installCertificateScriptPath)
-            .writeAsString(installCertificateScript);
+        await File(installCertificateScriptPath).writeAsString(installCertificateScript);
 
         // then execute it with admin privileges
         ProcessResult importCertificate = await Process.run('powershell.exe', [
@@ -206,12 +197,10 @@ class SignTool {
 
     String signToolPath = p.join(_config.msixToolkitPath, 'signtool.exe');
     final signToolOptions = getSignToolOptions();
-    bool isFullSignToolCommand =
-        signToolOptions[0].toLowerCase().contains('signtool');
+    bool isFullSignToolCommand = signToolOptions[0].toLowerCase().contains('signtool');
 
     // ignore: avoid_single_cascade_in_expression_statements
-    await Process.run(
-        isFullSignToolCommand ? signToolOptions[0] : signToolPath, [
+    await Process.run(isFullSignToolCommand ? signToolOptions[0] : signToolPath, [
       if (!isFullSignToolCommand) 'sign',
       ...signToolOptions.skip(isFullSignToolCommand ? 1 : 0),
       _config.msixPath,
